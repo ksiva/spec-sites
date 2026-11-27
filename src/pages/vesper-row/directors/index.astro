@@ -34,7 +34,7 @@ const count = (slug) => data.work.filter((w) => w.director === slug).length;
     lis.forEach((x, k) => x.classList.toggle("is-on", k === i));
   };
   lis.forEach((li, i) => { li.addEventListener("pointerenter", () => show(i)); li.querySelector("a")?.addEventListener("focus", () => show(i)); });
-  gsap.from(".names__in", { yPercent: 110, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.2 });
+  if (!(matchMedia("(prefers-reduced-motion: reduce)").matches && !location.search.includes("motion"))) gsap.from(".names__in", { yPercent: 110, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.2 });
 </script>
 
 <style>

@@ -100,7 +100,9 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   videos[0].addEventListener("playing", () => videos.slice(1).forEach((v) => (v.preload = "auto")), { once: true });
 
   const firstFrame = new Promise((r) => (videos[0].readyState >= 3 ? r(0) : videos[0].addEventListener("canplay", r, { once: true })));
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches && !location.search.includes("motion");
   loader(firstFrame, "Vesper Row — Reel 2026").then(() => {
+    if (reduce) return; // no entrance animation: everything is simply there
     gsap.from(items, { yPercent: 120, opacity: 0, duration: 1, stagger: 0.06, ease: "expo.out" });
     gsap.from(".ri__side > *", { y: 20, opacity: 0, duration: 1, stagger: 0.08, ease: "power3.out", delay: 0.3 });
   });
