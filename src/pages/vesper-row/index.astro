@@ -14,6 +14,7 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
       {featured.map((w, i) => <video src={media(w.loop)} poster={media(w.still)} muted loop playsinline preload={i === 0 ? "auto" : "metadata"}></video>)}
     </div>
     <div class="ri__shade"></div>
+    <i class="ri__bar ri__bar--t" aria-hidden="true"></i><i class="ri__bar ri__bar--b" aria-hidden="true"></i>
 
     <ol class="ri__list" aria-label="Featured films">
       {featured.map((w, i) => (
@@ -95,7 +96,7 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   const videos = [...ri.querySelectorAll<HTMLVideoElement>(".ri__videos video")];
   const items = [...ri.querySelectorAll<HTMLElement>(".ri__item")];
   const dots = [...ri.querySelectorAll<HTMLButtonElement>(".ri__dot")];
-  const reel = createReel(ri.querySelector("canvas")!, videos);
+  const reel = createReel(ri.querySelector("canvas")!, videos, { halo: 1.6 });
   // Warm the other films once the first is playing.
   videos[0].addEventListener("playing", () => videos.slice(1).forEach((v) => (v.preload = "auto")), { once: true });
 
@@ -129,6 +130,14 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   dots.forEach((d, i) => d.addEventListener("click", () => select(i)));
   select(0);
 
+  // Letterbox: as you scroll away from the hero, black bars close the frame to a 2.39:1 slit (and open on the way back).
+  if (!reduce) {
+    import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.fromTo(ri, { "--lb": 0 }, { "--lb": 1, ease: "none", scrollTrigger: { trigger: ri, start: "top top", end: "bottom top", scrub: true } });
+    });
+  }
+
   // Full reel player.
   const player = document.getElementById("player") as HTMLDialogElement;
   const pv = player.querySelector("video")!;
@@ -157,6 +166,9 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
 
   .ri { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: #000; }
   .ri__gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .ri { --lb: 0; }
+  .ri__bar { position: absolute; left: 0; right: 0; z-index: 2; background: #000; pointer-events: none; height: calc((50% - 50vw / 2.39) * var(--lb)); }
+  .ri__bar--t { top: 0; } .ri__bar--b { bottom: 0; }
   .ri__videos { position: absolute; inset: 0; }
   .ri__videos video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
   .ri__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 55%, transparent 100%), linear-gradient(0deg, rgba(0,0,0,.6) 0%, transparent 45%); }

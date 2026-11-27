@@ -1,9 +1,12 @@
 ---
 import "../kit/kit.css";
 import { url, media } from "../lib.js";
+// The front door. Hover (or focus) a name and its film opens full-screen through a letterbox wipe; on touch
+// screens the films take turns. A live timecode runs in the corner, like a monitor on set.
 const sites = [
-  { href: "/vesper-row/", name: "Vesper Row", kind: "Production company", loop: "hd/redcar.mp4" },
-  { href: "/mira-castellane/", name: "Mira Castellane", kind: "Commercial director", loop: "hd/m-silk.mp4" },
+  { href: url("/vesper-row/"), name: "Vesper Row", kind: "Production company", loop: "hd/redcar.mp4", poster: "hd/redcar.jpg" },
+  { href: url("/mira-castellane/"), name: "Mira Castellane", kind: "Commercial director", loop: "hd/m-silk.mp4", poster: "hd/m-silk.jpg" },
+  { href: "https://ksiva.github.io/highlighter/", name: "Highlighter", kind: "Motion reference · 17 patterns", loop: "hd/highlighter.mp4", poster: "hd/highlighter.jpg" },
 ];
 ---
 <!doctype html>
@@ -11,30 +14,108 @@ const sites = [
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Concept sites by Siva</title>
-    <meta name="description" content="Concept websites for a production company and a commercial director, built by Siva." />
+    <meta name="description" content="Concept websites for a production company and a commercial director, and a reference of motion patterns, built by Siva." />
     <meta name="robots" content="noindex" />
     <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <div class="screen" aria-hidden="true">
+      {sites.map((s, i) => <video class="screen__v" data-i={i} src={media(s.loop)} poster={media(s.poster)} muted loop playsinline preload={i === 0 ? "auto" : "metadata"}></video>)}
+      <i class="bar bar--t"></i><i class="bar bar--b"></i>
+    </div>
+    <header class="hud mono">
+      <span>Concept sites by Siva</span>
+      <span class="hud__tc"><b class="rec"></b><span data-tc>00:00:00:00</span></span>
+    </header>
     <main>
-      <p class="mono">Concept sites by Siva</p>
-      <ul>
-        {sites.map((s) => (
-          <li data-preview={media(s.loop)}><a href={url(s.href)}><span class="n">{s.name}</span><span class="mono">{s.kind}</span></a></li>
+      <ol class="list">
+        {sites.map((s, i) => (
+          <li data-i={i}>
+            <a href={s.href}>
+              <span class="mono n">0{i + 1}</span>
+              <span class="t">{s.name}</span>
+              <span class="mono k">{s.kind}</span>
+            </a>
+          </li>
         ))}
-      </ul>
-      <p class="mono note">Both studios are fictional, built to show design and motion. Footage: Pexels.</p>
+      </ol>
     </main>
-    <script>import { initMotion } from "../kit/motion.js"; initMotion();</script>
+    <footer class="foot mono"><span>Fictional studios, built to show design and motion.</span><span>Footage: Pexels</span></footer>
+
+    <script>
+      import gsap from "gsap";
+      import { initMotion } from "../kit/motion.js";
+      initMotion();
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches && !location.search.includes("motion");
+      const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const vids = [...document.querySelectorAll<HTMLVideoElement>(".screen__v")];
+      const rows = [...document.querySelectorAll<HTMLElement>(".list li")];
+      const tc = document.querySelector<HTMLElement>("[data-tc]")!;
+      const screen = document.querySelector<HTMLElement>(".screen")!;
+      let cur = -1;
+
+      // Letterbox: closed (bars meet) → a 2.39:1 slit → full frame, as --open goes 0 → 1.
+      const show = (i: number) => {
+        if (i === cur) return;
+        const prev = cur; cur = i;
+        rows.forEach((r, k) => r.classList.toggle("is-on", k === i));
+        vids.forEach((v, k) => v.classList.toggle("is-on", k === i));
+        vids[i].play().catch(() => {});
+        if (prev >= 0) setTimeout(() => { if (cur !== prev) vids[prev].pause(); }, 900);
+        if (!reduce) gsap.fromTo(screen, { "--open": 0.18 }, { "--open": 1, duration: 1.3, ease: "expo.out", overwrite: true });
+        else screen.style.setProperty("--open", "1");
+      };
+      rows.forEach((r, i) => {
+        r.addEventListener("pointerenter", () => show(i));
+        r.querySelector("a")!.addEventListener("focus", () => show(i));
+      });
+      // touch screens: the films take turns
+      const cycle = () => { show((cur + 1) % vids.length); window.setTimeout(cycle, 4200); };
+      if (!fine) cycle(); else show(0);
+      // timecode from the playing film, 25 fps
+      const pad = (n: number) => String(Math.floor(n)).padStart(2, "0");
+      gsap.ticker.add(() => {
+        const v = vids[cur]; if (!v) return;
+        const t = v.currentTime;
+        tc.textContent = `00:${pad(t / 60)}:${pad(t % 60)}:${pad((t % 1) * 25)}`;
+      });
+      if (!reduce) gsap.from(".list .t", { yPercent: 110, opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.08, delay: 0.1 });
+    </script>
   </body>
 </html>
 <style is:global>
-  body { margin: 0; min-height: 100svh; background: #0b0b0b; color: #ede9e3; font-family: "Inter Tight", sans-serif; display: grid; place-items: center; }
-  main { width: min(1100px, 100% - 32px); }
-  .mono { font: 500 11px/1.4 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: #8d8a84; }
-  ul { list-style: none; padding: 0; margin: 24px 0; border-top: 1px solid #262523; }
-  a { color: inherit; text-decoration: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; padding: 18px 0; border-bottom: 1px solid #262523; }
-  .n { font-size: clamp(40px, 8vw, 110px); letter-spacing: -0.05em; font-weight: 500; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
-  a:hover .n { transform: translateX(16px); }
+  :root { --kit-accent: #ff3b2f; }
+  html, body { margin: 0; height: 100%; }
+  body { min-height: 100svh; background: #0b0b0b; color: #ede9e3; font-family: "Inter Tight", sans-serif; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+  .mono { font: 500 11px/1.4 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+
+  /* the screen behind everything */
+  .screen { position: fixed; inset: 0; z-index: 0; --open: 1; }
+  .screen__v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s cubic-bezier(.23,1,.32,1), transform 2.4s cubic-bezier(.23,1,.32,1); filter: saturate(.92) contrast(1.04); }
+  .screen__v.is-on { opacity: 1; transform: none; }
+  .screen::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(0,0,0,.55)), linear-gradient(0deg, rgba(0,0,0,.6), transparent 50%); pointer-events: none; }
+  /* bars: meet at --open 0, a 2.39:1 slit near 0.45, gone at 1 */
+  .bar { position: absolute; left: 0; right: 0; z-index: 1; background: #0b0b0b; height: calc(50% * (1 - var(--open))); }
+  .bar--t { top: 0; } .bar--b { bottom: 0; }
+
+  .hud, .foot { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 18px clamp(16px, 3vw, 40px); color: rgba(237,233,227,.72); }
+  .hud__tc { display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+  .rec { width: 7px; height: 7px; border-radius: 50%; background: #ff3b2f; animation: rec 1.2s steps(2, jump-none) infinite; }
+  @keyframes rec { 50% { opacity: .15; } }
+
+  main { position: relative; z-index: 2; align-self: end; padding: 0 clamp(16px, 3vw, 40px) 3vh; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list a { display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; gap: 16px; color: inherit; text-decoration: none; padding: 4px 0; overflow: hidden; }
+  .list .t { display: inline-block; font-size: clamp(40px, min(8.2vw, 15vh), 156px); line-height: .94; letter-spacing: -.055em; font-weight: 500; color: rgba(237,233,227,.3); transition: color .6s cubic-bezier(.23,1,.32,1), transform .8s cubic-bezier(.23,1,.32,1); }
+  .list .n, .list .k { color: rgba(237,233,227,.55); transition: color .4s; }
+  .list li.is-on .t { color: #f6f2ec; transform: translateX(18px); }
+  .list li.is-on .k { color: #f6f2ec; }
+  .list li.is-on .n { color: var(--kit-accent); }
+  @media (max-width: 700px) {
+    .list a { grid-template-columns: 30px 1fr; }
+    .list .k { grid-column: 2; margin-top: -2px; }
+    .list .t { font-size: 13vw; }
+    .foot { flex-direction: column; gap: 4px; }
+  }
 </style>

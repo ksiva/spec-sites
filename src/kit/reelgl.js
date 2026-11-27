@@ -8,7 +8,7 @@ void main(){ vUv = p * 0.5 + 0.5; vUv.y = 1.0 - vUv.y; gl_Position = vec4(p, 0.0
 const FRAG = `precision highp float;
 varying vec2 vUv;
 uniform sampler2D uA, uB;
-uniform float uP, uAspect, uTexAspect, uTime;
+uniform float uP, uAspect, uTexAspect, uTime, uHalo;
 uniform vec2 uMouse;
 float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
@@ -29,12 +29,23 @@ void main(){
   // a thin bright seam rides the wipe, like light leaking between frames
   float seam = smoothstep(0.0, 0.5, w) * smoothstep(1.0, 0.5, w);
   vec3 col = mix(a, b, w) + seam * 0.18 * vec3(1.0, 0.92, 0.8);
+  // halation: highlights bleed a warm red-orange glow into their surroundings, like light scattering in film stock
+  vec2 px = vec2(0.012, 0.012 * uAspect);
+  vec3 glow = vec3(0.0);
+  for (int k = 0; k < 8; k++) {
+    float ang = float(k) * 0.7854;
+    vec2 o = vec2(cos(ang), sin(ang)) * px;
+    vec3 sA = texture2D(uA, cover(uv + dA + o)).rgb, sB = texture2D(uB, cover(uv - dB + o)).rgb;
+    vec3 s = mix(sA, sB, w);
+    glow += max(s - 0.62, 0.0);
+  }
+  col += glow / 8.0 * vec3(1.0, 0.36, 0.18) * uHalo;
   // vignette
   vec2 q = vUv - 0.5; col *= 1.0 - dot(q, q) * 0.55;
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-export function createReel(canvas, videos, { texAspect = 16 / 9, duration = 1.4 } = {}) {
+export function createReel(canvas, videos, { texAspect = 16 / 9, duration = 1.4, halo = 0 } = {}) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches && !location.search.includes("motion");
   const gl = !reduce && canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false });
   let current = 0;
@@ -73,6 +84,7 @@ export function createReel(canvas, videos, { texAspect = 16 / 9, duration = 1.4 
   gl.uniform1i(U("uA"), 0);
   gl.uniform1i(U("uB"), 1);
   gl.uniform1f(uTexAspect, texAspect);
+  gl.uniform1f(U("uHalo"), halo);
 
   const makeTex = () => {
     const t = gl.createTexture();
