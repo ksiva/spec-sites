@@ -43,6 +43,7 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
 
   <dialog class="player" id="player" aria-label="Vesper Row reel">
     <video src={media(data.reel)} controls playsinline preload="none"></video>
+    <a class="player__dir mono" hidden>Director</a>
     <button class="player__close mono">Close</button>
   </dialog>
 
@@ -141,10 +142,25 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   // Full reel player.
   const player = document.getElementById("player") as HTMLDialogElement;
   const pv = player.querySelector("video")!;
-  document.getElementById("play")?.addEventListener("click", () => { player.showModal(); pv.currentTime = 0; pv.play(); });
+  document.getElementById("play")?.addEventListener("click", () => {
+    // the reel button always plays the reel, even after a title opened its own film
+    if (pv.dataset.reel) { pv.src = pv.dataset.reel; delete pv.dataset.reel; }
+    player.querySelector<HTMLAnchorElement>(".player__dir")!.hidden = true;
+    player.showModal(); pv.currentTime = 0; pv.play();
+  });
   player.querySelector(".player__close")?.addEventListener("click", () => player.close());
   player.addEventListener("click", (e) => { if (e.target === player) player.close(); });
-  player.addEventListener("close", () => pv.pause());
+  player.addEventListener("close", () => { pv.pause(); player.querySelector<HTMLAnchorElement>(".player__dir")!.hidden = true; if (pv.dataset.reel) { pv.src = pv.dataset.reel; delete pv.dataset.reel; } });
+  // A featured title plays its own film right here (the director's page stays one click away in the player bar).
+  items.forEach((el, i) => el.querySelector("a")?.addEventListener("click", (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    pv.dataset.reel = pv.dataset.reel || pv.getAttribute("src") || "";
+    pv.src = videos[i].currentSrc || videos[i].src;
+    const dir = player.querySelector<HTMLAnchorElement>(".player__dir")!;
+    dir.href = (e.currentTarget as HTMLAnchorElement).href; dir.textContent = `${el.querySelector(".ri__d")?.firstChild?.textContent?.trim() ?? "Director"} →`; dir.hidden = false;
+    player.showModal(); pv.currentTime = 0; pv.play().catch(() => {});
+  }));
 
   // Director roster: hovering a name brings their film up behind the list.
   const bg = [...document.querySelectorAll<HTMLVideoElement>(".roster__bg video")];
@@ -173,11 +189,11 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   .ri__list, .ri__dots, .ri__side, .ri__scroll { z-index: 3; }
   .ri__videos { position: absolute; inset: 0; }
   .ri__videos video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
-  .ri__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 55%, transparent 100%), linear-gradient(0deg, rgba(0,0,0,.6) 0%, transparent 45%); }
+  .ri__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,.55), transparent 18%), linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 55%, transparent 100%), linear-gradient(0deg, rgba(0,0,0,.6) 0%, transparent 45%); }
 
   .ri__list { position: absolute; left: var(--pad); bottom: clamp(28px, 5vw, 64px); margin: 0; padding: 0; list-style: none; width: min(780px, 70vw); }
   .ri__item { position: relative; overflow: hidden; }
-  .ri__item a { display: grid; grid-template-columns: 44px auto 1fr; align-items: baseline; gap: 14px; padding: 6px 0; }
+  .ri__item a { display: grid; grid-template-columns: 44px auto 1fr; align-items: baseline; column-gap: 28px; padding: 6px 0; }
   .ri__t { font-size: clamp(34px, 4.6vw, 76px); font-weight: 500; letter-spacing: -0.045em; line-height: 1; color: rgba(237,233,227,.28); transition: color .5s, transform .7s cubic-bezier(.2,.8,.2,1); }
   .ri__d { font-size: 14px; color: rgba(237,233,227,0); transition: color .5s; white-space: nowrap; }
   .ri__d em { font-style: normal; opacity: .7; }
@@ -243,4 +259,5 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   .ncard:hover img, .ncard:hover video { transform: scale(1.05); }
   .ncard h3 { font-size: 24px; line-height: 1.15; margin-top: 8px; letter-spacing: -0.02em; }
   @media (max-width: 820px) { .news__grid { grid-template-columns: 1fr; } }
+  .player__dir { position: fixed; top: 18px; left: 18px; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.3); border-radius: 99px; padding: 10px 16px; }
 </style>

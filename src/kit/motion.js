@@ -245,7 +245,7 @@ function pageTransitions() {
   }
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a[href]");
-    if (!a || reduce || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
+    if (!a || e.defaultPrevented || reduce || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
     const to = new URL(a.href, location.href);
     if (to.origin !== location.origin || (to.pathname === location.pathname && to.hash)) return;
     e.preventDefault();

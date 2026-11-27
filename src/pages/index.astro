@@ -4,9 +4,9 @@ import { url, media } from "../lib.js";
 // The front door. Hover (or focus) a name and its film opens full-screen through a letterbox wipe; on touch
 // screens the films take turns. A live timecode runs in the corner, like a monitor on set.
 const sites = [
-  { href: url("/vesper-row/"), name: "Vesper Row", kind: "Production company", loop: "hd/redcar.mp4", poster: "hd/redcar.jpg" },
-  { href: url("/mira-castellane/"), name: "Mira Castellane", kind: "Commercial director", loop: "hd/m-silk.mp4", poster: "hd/m-silk.jpg" },
-  { href: "https://ksiva.github.io/highlighter/", name: "Highlighter", kind: "Motion reference · 17 patterns", loop: "hd/highlighter.mp4", poster: "hd/highlighter.jpg" },
+  { href: url("/vesper-row/"), name: "Vesper Row", kind: "Production company", scope: "WebGL reel · director roster · 14 pages", loop: "hd/redcar.mp4", poster: "hd/redcar.jpg" },
+  { href: url("/mira-castellane/"), name: "Mira Castellane", kind: "Commercial director", scope: "Letterboxed reel · film index · 14 pages", loop: "hd/m-silk.mp4", poster: "hd/m-silk.jpg" },
+  { href: "https://ksiva.github.io/highlighter/", name: "Highlighter", kind: "Motion reference", scope: "20 live patterns · three.js · Web Audio", loop: "hd/highlighter.mp4", poster: "hd/highlighter.jpg" },
 ];
 ---
 <!doctype html>
@@ -25,7 +25,7 @@ const sites = [
       <i class="bar bar--t"></i><i class="bar bar--b"></i>
     </div>
     <header class="hud mono">
-      <span>Concept sites by Siva</span>
+      <span>Siva · film-first websites</span>
       <span class="hud__tc"><b class="rec"></b><span data-tc>00:00:00:00</span></span>
     </header>
     <main>
@@ -35,13 +35,20 @@ const sites = [
             <a href={s.href}>
               <span class="mono n">0{i + 1}</span>
               <span class="t">{s.name}</span>
-              <span class="mono k">{s.kind}</span>
+              <span class="mono k">{s.kind}<em>{s.scope}</em></span>
             </a>
           </li>
         ))}
       </ol>
     </main>
-    <footer class="foot mono"><span>Fictional studios, built to show design and motion.</span><span>Footage: Pexels</span></footer>
+    <footer class="foot">
+      <p class="pitch">I build film-first sites.<span class="mono">Available from Monday 30 November 2026</span></p>
+      <nav class="cta" aria-label="Contact">
+        <a class="cta__main" href="https://www.upwork.com/freelancers/~0172fdaac5d9d98a5d" rel="noopener">Hire me on Upwork <span aria-hidden="true">→</span></a>
+        <a class="cta__alt mono" href="https://ksiva.github.io/portfolio/">Full portfolio</a>
+      </nav>
+      <p class="mono note">Concept work, fictional brands · Footage: Pexels</p>
+    </footer>
 
     <script>
       import gsap from "gsap";
@@ -100,6 +107,16 @@ const sites = [
   .bar--t { top: 0; } .bar--b { bottom: 0; }
 
   .hud, .foot { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 18px clamp(16px, 3vw, 40px); color: rgba(237,233,227,.72); }
+  .foot { align-items: center; flex-wrap: wrap; border-top: 1px solid rgba(237,233,227,.14); background: linear-gradient(0deg, rgba(0,0,0,.55), transparent); }
+  .pitch { margin: 0; display: grid; gap: 4px; font-size: clamp(18px, 1.6vw, 24px); letter-spacing: -.02em; color: #f6f2ec; }
+  .pitch .mono { color: rgba(237,233,227,.62); }
+  .cta { display: flex; align-items: center; gap: 18px; }
+  .cta__main { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 99px; background: #f6f2ec; color: #0b0b0b; text-decoration: none; font-weight: 600; transition: transform .16s cubic-bezier(.23,1,.32,1), background .2s; }
+  .cta__main:hover { background: #fff; } .cta__main:active { transform: scale(.97); }
+  .cta__alt { color: rgba(237,233,227,.8); text-decoration: none; border-bottom: 1px solid rgba(237,233,227,.35); padding-bottom: 2px; }
+  .note { margin: 0; flex-basis: 100%; color: rgba(237,233,227,.45); }
+  .list .k em { display: block; font-style: normal; margin-top: 4px; letter-spacing: .08em; color: rgba(237,233,227,.4); }
+  .list li.is-on .k em { color: rgba(237,233,227,.75); }
   .hud__tc { display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
   .rec { width: 7px; height: 7px; border-radius: 50%; background: #ff3b2f; animation: rec 1.2s steps(2, jump-none) infinite; }
   @keyframes rec { 50% { opacity: .15; } }
@@ -116,6 +133,11 @@ const sites = [
     .list a { grid-template-columns: 30px 1fr; }
     .list .k { grid-column: 2; margin-top: -2px; }
     .list .t { font-size: clamp(30px, 10.5vw, 52px); }
-    .foot { flex-direction: column; gap: 4px; }
+    html, body { height: auto; }
+    body { overflow: auto; min-height: 100svh; }
+    main { padding-top: 30svh; }
+    .foot { flex-direction: column; align-items: stretch; gap: 12px; }
+    .note { flex-basis: auto; }
+    .list .k em { display: none; }
   }
 </style>
