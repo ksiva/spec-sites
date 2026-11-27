@@ -115,11 +115,20 @@ export function createReel(canvas, videos, { texAspect = 16 / 9, duration = 1.4,
     gl.uniform1f(uAspect, w / hgt);
   };
   const t0 = performance.now();
+  let visible = true;
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    videos.forEach((v, k) => { if (!visible) v.pause(); else if (k === current) v.play().catch(() => {}); });
+  }).observe(canvas);
+  let lastA = -1, lastB = -1;
   gsap.ticker.add(() => {
+    if (!visible) return;
     resize();
     mouse.x += (mouse.tx - mouse.x) * 0.05; mouse.y += (mouse.ty - mouse.y) * 0.05;
-    upload(texA, 0, videos[state.a]);
-    upload(texB, 1, videos[state.b]);
+    // upload a frame only when the film moved on (or the pair changed)
+    const va = videos[state.a], vb = videos[state.b];
+    if (va.currentTime !== lastA || state.p > -0.25) { upload(texA, 0, va); lastA = va.currentTime; }
+    if (state.p > -0.25 && vb.currentTime !== lastB) { upload(texB, 1, vb); lastB = vb.currentTime; }
     gl.uniform1f(uP, state.p);
     gl.uniform1f(uTime, (performance.now() - t0) / 1000);
     gl.uniform2f(uMouse, mouse.x, mouse.y);
@@ -133,7 +142,7 @@ export function createReel(canvas, videos, { texAspect = 16 / 9, duration = 1.4,
       // Freeze where we are: whatever is on screen becomes A, the new film is B.
       const from = state.p > 0.5 ? state.b : state.a;
       tween?.kill();
-      state.a = from; state.b = i; state.p = -0.25; current = i;
+      state.a = from; state.b = i; state.p = -0.25; current = i; lastA = lastB = -1;
       videos[i].play().catch(() => {});
       tween = gsap.to(state, {
         p: 1.25, duration, ease: "power2.inOut",

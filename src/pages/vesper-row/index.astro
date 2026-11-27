@@ -143,6 +143,7 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   const pv = player.querySelector("video")!;
   document.getElementById("play")?.addEventListener("click", () => { player.showModal(); pv.currentTime = 0; pv.play(); });
   player.querySelector(".player__close")?.addEventListener("click", () => player.close());
+  player.addEventListener("click", (e) => { if (e.target === player) player.close(); });
   player.addEventListener("close", () => pv.pause());
 
   // Director roster: hovering a name brings their film up behind the list.
@@ -169,6 +170,7 @@ const featured = data.featured.map((s) => data.work.find((w) => w.slug === s));
   .ri { --lb: 0; }
   .ri__bar { position: absolute; left: 0; right: 0; z-index: 2; background: #000; pointer-events: none; height: calc((50% - 50vw / 2.39) * var(--lb)); }
   .ri__bar--t { top: 0; } .ri__bar--b { bottom: 0; }
+  .ri__list, .ri__dots, .ri__side, .ri__scroll { z-index: 3; }
   .ri__videos { position: absolute; inset: 0; }
   .ri__videos video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
   .ri__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 55%, transparent 100%), linear-gradient(0deg, rgba(0,0,0,.6) 0%, transparent 45%); }

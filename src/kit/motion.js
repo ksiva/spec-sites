@@ -110,6 +110,10 @@ function cursor() {
     el.addEventListener("pointerenter", () => { framed = null; label.textContent = el.dataset.cursor; vf.className = "kit-vf is-live is-media"; wTo(118); hTo(66); });
     el.addEventListener("pointerleave", free);
   });
+  document.querySelectorAll("input, textarea, select, [data-scrub]").forEach((el) => {
+    el.addEventListener("pointerenter", () => vf.classList.remove("is-live"));
+    el.addEventListener("pointerleave", () => { if (moved) vf.classList.add("is-live"); });
+  });
   document.querySelectorAll("a, button").forEach((el) => {
     if (el.closest("[data-cursor]")) return;
     el.addEventListener("pointerenter", () => {
@@ -220,14 +224,10 @@ function grain() {
   const layer = document.createElement("div");
   layer.className = "kit-grain";
   document.body.append(layer);
-  const frames = Array.from({ length: 4 }, () => {
-    const img = ctx.createImageData(160, 160);
-    for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
-    ctx.putImageData(img, 0, 0);
-    return `url(${c.toDataURL()})`;
-  });
-  let k = 0;
-  setInterval(() => { layer.style.backgroundImage = frames[k++ % frames.length]; }, 90);
+  const img = ctx.createImageData(160, 160);
+  for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+  ctx.putImageData(img, 0, 0);
+  layer.style.backgroundImage = `url(${c.toDataURL()})`;   // static tile; the CSS animation moves it
 }
 
 // Curtain between pages: covers on leaving, lifts on arriving.
