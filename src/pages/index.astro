@@ -124,14 +124,15 @@ const sites = [
   main { position: relative; z-index: 2; align-self: end; padding: 0 clamp(16px, 3vw, 40px) 3vh; }
   .list { list-style: none; margin: 0; padding: 0; }
   .list a { display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; gap: 16px; color: inherit; text-decoration: none; padding: 4px 0; overflow: hidden; }
-  .list .t { display: inline-block; font-size: clamp(40px, min(8.2vw, 15vh), 156px); line-height: .94; letter-spacing: -.055em; font-weight: 500; color: rgba(237,233,227,.3); transition: color .6s cubic-bezier(.23,1,.32,1), transform .8s cubic-bezier(.23,1,.32,1); }
+  .list .t { display: inline-block; font-size: clamp(40px, min(8.2vw, 15vh), 156px); line-height: .94; letter-spacing: -.055em; font-weight: 500; color: rgba(237,233,227,.46); transition: color .6s cubic-bezier(.23,1,.32,1), transform .8s cubic-bezier(.23,1,.32,1); }
   .list .n, .list .k { color: rgba(237,233,227,.55); transition: color .4s; }
   .list li.is-on .t { color: #f6f2ec; transform: translateX(18px); }
   .list li.is-on .k { color: #f6f2ec; }
   .list li.is-on .n { color: var(--kit-accent); }
   @media (max-width: 700px) {
-    .list a { grid-template-columns: 30px 1fr; }
-    .list .k { grid-column: 2; margin-top: -2px; }
+    .list a { grid-template-columns: 30px 1fr; grid-template-rows: auto auto; gap: 2px 12px; padding: 8px 0; }
+    .list .n { grid-row: 1 / span 2; }
+    .list .k { grid-column: 2; grid-row: 2; }
     .list .t { font-size: clamp(30px, 10.5vw, 52px); }
     html, body { height: auto; }
     body { overflow: auto; min-height: 100svh; }
