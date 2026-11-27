@@ -1,0 +1,213 @@
+{
+  "name": "Mira Castellane",
+  "role": "Director, commercials",
+  "city": "Toronto",
+  "reel": "hd/mira-reel.mp4",
+  "intro": "I make short films for brands: fragrance, travel, sport and the odd coffee. I like real light, long lenses and letting a shot breathe.",
+  "films": [
+    {
+      "slug": "wild-country",
+      "title": "Wild Country",
+      "client": "Atlas Outdoor",
+      "type": "Travel",
+      "year": 2026,
+      "ratio": "2.39:1",
+      "loop": "hd/m-horses.mp4",
+      "still": "hd/m-horses.jpg",
+      "logline": "A herd moving through Patagonian light, shot from the ground with a single long lens.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "DOP",
+          "Ren Ashby"
+        ],
+        [
+          "Colour",
+          "Lumen Grade"
+        ]
+      ]
+    },
+    {
+      "slug": "noir-silk",
+      "title": "Noir",
+      "client": "Maison Verre",
+      "type": "Fragrance",
+      "year": 2026,
+      "ratio": "2.39:1",
+      "loop": "hd/m-silk.mp4",
+      "still": "hd/m-silk.jpg",
+      "logline": "Black silk, one light, no product until the last frame.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "DOP",
+          "Ren Ashby"
+        ],
+        [
+          "Art direction",
+          "Coral Ines"
+        ]
+      ]
+    },
+    {
+      "slug": "after-dark",
+      "title": "After Dark",
+      "client": "Kinetic Mobile",
+      "type": "Technology",
+      "year": 2025,
+      "ratio": "2.39:1",
+      "loop": "hd/m-city.mp4",
+      "still": "hd/m-city.jpg",
+      "logline": "A city at night as one long breath, for a phone that sees in the dark.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "Aerial",
+          "Northline Drones"
+        ],
+        [
+          "Edit",
+          "Sam Pell"
+        ]
+      ]
+    },
+    {
+      "slug": "set-wave",
+      "title": "Set Wave",
+      "client": "Tidewater Apparel",
+      "type": "Sport",
+      "year": 2025,
+      "ratio": "2.39:1",
+      "loop": "hd/m-surf.mp4",
+      "still": "hd/m-surf.jpg",
+      "logline": "Dawn sessions on a cold coast with three surfers and no script.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "Water DOP",
+          "Kai Morrow"
+        ],
+        [
+          "Edit",
+          "Sam Pell"
+        ]
+      ]
+    },
+    {
+      "slug": "first-pour",
+      "title": "First Pour",
+      "client": "Cedar & Grain Coffee",
+      "type": "Food",
+      "year": 2025,
+      "ratio": "2.39:1",
+      "loop": "hd/m-coffee.mp4",
+      "still": "hd/m-coffee.jpg",
+      "logline": "The first cup of the day, shot at 1,000 frames a second.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "Tabletop",
+          "Stage Seven"
+        ],
+        [
+          "Colour",
+          "Lumen Grade"
+        ]
+      ]
+    },
+    {
+      "slug": "glass",
+      "title": "Glass",
+      "client": "Northfield Insurance",
+      "type": "Brand film",
+      "year": 2024,
+      "ratio": "2.39:1",
+      "loop": "hd/m-rain.mp4",
+      "still": "hd/m-rain.jpg",
+      "logline": "Rain on a window and the people you wait up for.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "DOP",
+          "Ren Ashby"
+        ],
+        [
+          "Music",
+          "Hollow Pines"
+        ]
+      ]
+    },
+    {
+      "slug": "movement",
+      "title": "Movement",
+      "client": "Halden Watchmakers",
+      "type": "Luxury",
+      "year": 2024,
+      "ratio": "2.39:1",
+      "loop": "hd/m-watch.mp4",
+      "still": "hd/m-watch.jpg",
+      "logline": "Inside a dial, where a second takes forever.",
+      "credits": [
+        [
+          "Director",
+          "Mira Castellane"
+        ],
+        [
+          "Macro",
+          "Ren Ashby"
+        ],
+        [
+          "Sound",
+          "Field Notes Audio"
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "slug": "one-lens",
+      "date": "2026-11-03",
+      "title": "Why I shot Wild Country on one lens",
+      "body": [
+        "Every shot in Wild Country is on the same long lens. It kept us far from the horses, which kept them calm, and it flattened the land into layers.",
+        "It also made every decision simpler. When the lens can't change, you move your feet."
+      ]
+    },
+    {
+      "slug": "silk",
+      "date": "2026-09-18",
+      "title": "Lighting black on black",
+      "body": [
+        "Black silk on a black stage is mostly about where the light isn't. We used one soft source from behind and let the edges do the work.",
+        "The product only appears in the last frame. The client was nervous. It tested best of the three cuts."
+      ]
+    },
+    {
+      "slug": "rain",
+      "date": "2026-07-02",
+      "title": "Rain you can direct",
+      "body": [
+        "Real rain never turns up on the day. For Glass we built a small rain rig over a window and tuned the drop size until it read on a long lens.",
+        "Practical effects take longer to set up and less time to fix."
+      ]
+    }
+  ]
+}

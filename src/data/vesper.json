@@ -1,0 +1,65 @@
+{
+  "name": "Vesper Row",
+  "tagline": "Commercials, branded films and the people who make them.",
+  "cities": "Toronto / Los Angeles",
+  "reel": "hd/vesper-reel.mp4",
+  "featured": ["overland", "round-nine", "breath", "rosso", "haze", "lane-four"],
+  "directors": [
+    {
+      "slug": "tomas-brandt",
+      "name": "Tomas Brandt",
+      "focus": "Automotive, aerial",
+      "bio": "Tomas plans car work like choreography: roads, weather and long light, shot for car brands and classic-car events across North America and Europe.",
+      "cover": "hd/redcar.jpg",
+      "loop": "hd/redcar.mp4"
+    },
+    {
+      "slug": "june-okafor",
+      "name": "June Okafor",
+      "focus": "Sport, performance",
+      "bio": "A former track athlete, June directs sport from the inside: real athletes, real effort, the camera at their height and their speed.",
+      "cover": "hd/boxw.jpg",
+      "loop": "hd/boxw.mp4"
+    },
+    {
+      "slug": "ada-reyes-hollis",
+      "name": "Ada Reyes-Hollis",
+      "focus": "Fragrance, beauty, tabletop",
+      "bio": "Ada works in the space between product and feeling. Slow, precise tabletop work and fragrance films built on light, mist and texture.",
+      "cover": "hd/mist.jpg",
+      "loop": "hd/mist.mp4"
+    },
+    {
+      "slug": "lev-marsh",
+      "name": "Lev Marsh",
+      "focus": "Music video, travel",
+      "bio": "Lev came up through music videos and still shoots like it: smoke, hard light and one strong idea per film.",
+      "cover": "hd/fogdance.jpg",
+      "loop": "hd/fogdance.mp4"
+    }
+  ],
+  "work": [
+    { "slug": "overland", "title": "Overland", "client": "Marrow Motor Co.", "director": "tomas-brandt", "category": "Automotive", "year": 2026, "loop": "hd/aerialcar.mp4", "still": "hd/aerialcar.jpg" },
+    { "slug": "round-nine", "title": "Round Nine", "client": "Kestrel Fight Co.", "director": "june-okafor", "category": "Sport", "year": 2026, "loop": "hd/boxw.mp4", "still": "hd/boxw.jpg" },
+    { "slug": "breath", "title": "Breath", "client": "Eau Lune", "director": "ada-reyes-hollis", "category": "Fragrance", "year": 2026, "loop": "hd/mist.mp4", "still": "hd/mist.jpg" },
+    { "slug": "rosso", "title": "Rosso", "client": "Northline Classic Rally", "director": "tomas-brandt", "category": "Automotive", "year": 2026, "loop": "hd/redcar.mp4", "still": "hd/redcar.jpg" },
+    { "slug": "haze", "title": "Haze", "client": "Hollow Pines", "director": "lev-marsh", "category": "Music video", "year": 2026, "loop": "hd/fogdance.mp4", "still": "hd/fogdance.jpg" },
+    { "slug": "lane-four", "title": "Lane Four", "client": "Pacer Nine", "director": "june-okafor", "category": "Sport", "year": 2025, "loop": "hd/track.mp4", "still": "hd/track.jpg" },
+    { "slug": "corner", "title": "Corner", "client": "Kestrel Fight Co.", "director": "june-okafor", "category": "Sport", "year": 2025, "loop": "hd/gloves.mp4", "still": "hd/gloves.jpg" },
+    { "slug": "still-water", "title": "Still Water", "client": "Eau Lune", "director": "ada-reyes-hollis", "category": "Fragrance", "year": 2025, "loop": "hd/bottle.mp4", "still": "hd/bottle.jpg" },
+    { "slug": "switchback", "title": "Switchback", "client": "Atlas Roadwear", "director": "tomas-brandt", "category": "Automotive", "year": 2025, "loop": "hd/road.mp4", "still": "hd/road.jpg" },
+    { "slug": "last-light", "title": "Last Light", "client": "Courtside League", "director": "june-okafor", "category": "Sport", "year": 2025, "loop": "hd/hoop.mp4", "still": "hd/hoop.jpg" },
+    { "slug": "first-step", "title": "First Step", "client": "Pacer Nine", "director": "june-okafor", "category": "Sport", "year": 2024, "loop": "hd/feet.mp4", "still": "hd/feet.jpg" },
+    { "slug": "long-way-north", "title": "Long Way North", "client": "Visit Nordhaven", "director": "lev-marsh", "category": "Travel", "year": 2024, "loop": "hd/norway.mp4", "still": "hd/norway.jpg" }
+  ],
+  "news": [
+    { "slug": "june-okafor-joins", "date": "2026-11-12", "title": "June Okafor joins the roster", "image": "news-feet.jpg", "loop": "hd/feet.mp4", "body": ["June comes to Vesper Row after three years of documentary sport work. Her first spot with us, Round Nine for Kestrel Fight Co., was shot in one night in a working gym with a real fighter.", "She is available for sport and performance work from January."] },
+    { "slug": "overland-wrap", "date": "2026-10-28", "title": "Overland: one road, one evening", "image": "news-aerialcar.jpg", "loop": "hd/aerialcar.mp4", "body": ["Tomas Brandt shot Overland for Marrow Motor Co. on a single stretch of northern highway in one evening of long, low light.", "One drone team, one camera car, and a crew of nine."] },
+    { "slug": "new-stage-b", "date": "2026-09-30", "title": "Stage B is open", "image": "news-mist.jpg", "loop": "hd/mist.mp4", "body": ["Our second stage is finished: a black-box stage for fragrance, beauty and effects work, with full blackout and a haze-safe air system.", "Book it with or without our crews. Details on the Space page."] }
+  ],
+  "space": [
+    { "name": "Stage A", "spec": "Tabletop and product. 30 x 40 ft, daylight or blackout, motion-control rig.", "image": "space-bottle.jpg" },
+    { "name": "Stage B", "spec": "Black box for fragrance, beauty and effects. Full blackout, haze-safe air.", "image": "space-mist.jpg" },
+    { "name": "Screening room", "spec": "12 seats, 4K projection, calibrated grade monitor.", "video": "hd/vesper-reel.mp4" }
+  ]
+}

@@ -1,0 +1,124 @@
+---
+import "../kit/kit.css";
+import data from "../data/vesper.json";
+import { url } from "../lib.js";
+
+interface Props { title?: string; description?: string; active?: string; overlay?: boolean; }
+const { title, description = data.tagline, active = "", overlay = false } = Astro.props;
+const fullTitle = title ? `${title} | ${data.name}` : `${data.name}: ${data.tagline}`;
+const nav = [
+  ["Work/News", "/vesper-row/work/"],
+  ["Directors", "/vesper-row/directors/"],
+  ["About", "/vesper-row/about/"],
+  ["Space", "/vesper-row/space/"],
+  ["Contact", "/vesper-row/contact/"],
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(url("/media/hd/redcar.jpg"), Astro.site)} />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href={`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b0b0b'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='%23ede9e3' font-family='Arial'>V</text></svg>`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body class:list={[{ overlay }]}>
+    <header class="nav">
+      <a class="brand" href={url("/vesper-row/")} data-magnetic>Vesper Row</a>
+      <nav aria-label="Main">
+        <ul>
+          {nav.map(([label, href]) => (
+            <li><a href={url(href)} class:list={[{ active: active === label }]}><span data-text={label}>{label}</span></a></li>
+          ))}
+        </ul>
+      </nav>
+      <button class="menu-btn" aria-expanded="false" aria-controls="mobile-menu">Menu</button>
+    </header>
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      <ul>{nav.map(([label, href]) => <li><a href={url(href)}>{label}</a></li>)}</ul>
+    </div>
+
+    <main><slot /></main>
+
+    <footer class="footer">
+      <div class="footer__top" data-reveal="stagger">
+        <div><span class="mono">Toronto</span><p>Studio and stages<br/>Ontario, Canada</p></div>
+        <div><span class="mono">Los Angeles</span><p>Production office<br/>California, USA</p></div>
+        <div><span class="mono">New work</span><p><a href={url("/vesper-row/contact/")}>hello@vesperrow.example</a></p></div>
+        <div><span class="mono">Follow</span><p>Instagram<br/>Vimeo</p></div>
+      </div>
+      <div class="footer__word" aria-hidden="true">Vesper Row</div>
+      <p class="footer__note mono">Concept site by Siva. Vesper Row, its directors and clients are fictional. Footage: Pexels.</p>
+    </footer>
+
+    <script>
+      import { initMotion } from "../kit/motion.js";
+      initMotion();
+      // Solid bar once the page scrolls, so the nav stays readable over any frame.
+      const navEl = document.querySelector(".nav");
+      const setSolid = () => navEl?.classList.toggle("is-solid", scrollY > 40);
+      setSolid(); addEventListener("scroll", setSolid, { passive: true });
+      const btn = document.querySelector(".menu-btn");
+      const menu = document.getElementById("mobile-menu");
+      btn?.addEventListener("click", () => {
+        const open = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!open));
+        btn.textContent = open ? "Menu" : "Close";
+        menu.hidden = open;
+        document.body.classList.toggle("menu-open", !open);
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #0b0b0b; --fg: #ede9e3; --dim: #8d8a84; --line: #262523; --accent: #c9b48a;
+    --kit-fg: var(--fg); --kit-bg: var(--bg); --kit-accent: var(--accent); --kit-mono: "JetBrains Mono", monospace; --kit-display: "Inter Tight", sans-serif; --kit-curtain: #0b0b0b;
+    --pad: clamp(16px, 3vw, 40px);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 16px/1.5 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  img, video { display: block; max-width: 100%; }
+  .mono { font: 500 11px/1.4 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  h1, h2, h3 { font-weight: 500; letter-spacing: -0.03em; margin: 0; line-height: .95; }
+  .wrap { padding: 0 var(--pad); }
+  .page-head { padding: clamp(120px, 18vh, 200px) var(--pad) clamp(40px, 6vw, 80px); }
+  .page-head h1 { font-size: clamp(48px, 11vw, 180px); }
+  .page-head p { max-width: 46ch; color: var(--dim); font-size: clamp(16px, 1.4vw, 20px); margin-top: 24px; }
+
+  .nav { position: fixed; inset: 0 0 auto 0; z-index: 50; display: flex; align-items: center; justify-content: space-between;
+         padding: 22px var(--pad); color: var(--fg); text-shadow: 0 1px 12px rgba(0,0,0,.45);
+         transition: background .4s, padding .4s, backdrop-filter .4s; }
+  .nav.is-solid { background: rgba(11,11,11,.82); backdrop-filter: blur(10px); padding-top: 14px; padding-bottom: 14px; text-shadow: none; }
+  .brand { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; display: inline-block; }
+  .nav ul { list-style: none; display: flex; gap: clamp(16px, 2.4vw, 36px); margin: 0; padding: 0; }
+  .nav a span { position: relative; display: inline-block; overflow: hidden; font-size: 14px; vertical-align: top; }
+  .nav a span::after { content: attr(data-text); position: absolute; left: 0; top: 100%; }
+  .nav a span, .nav a span::after { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+  .nav a:hover span { transform: translateY(-100%); }
+  .nav a.active span { text-decoration: underline; text-underline-offset: 5px; }
+  .menu-btn { display: none; background: none; border: 0; color: inherit; font: inherit; font-size: 14px; padding: 8px 0; }
+  .mobile-menu { position: fixed; inset: 0; z-index: 40; background: var(--bg); padding: 110px var(--pad) var(--pad); }
+  .mobile-menu ul { list-style: none; margin: 0; padding: 0; }
+  .mobile-menu a { display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.03em; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  @media (max-width: 820px) { .nav nav { display: none; } .menu-btn { display: block; } }
+
+  .footer { padding: clamp(80px, 10vw, 140px) var(--pad) 24px; border-top: 1px solid var(--line); margin-top: clamp(80px, 10vw, 160px); overflow: hidden; }
+  .footer__top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .footer__top p { margin: 10px 0 0; color: var(--fg); }
+  .footer__top a { border-bottom: 1px solid var(--dim); }
+  .footer__word { font-size: clamp(64px, 17.5vw, 330px); font-weight: 600; letter-spacing: -0.06em; line-height: .8; margin: clamp(60px, 8vw, 120px) 0 24px; white-space: nowrap; }
+  .footer__note { margin: 0; }
+  @media (max-width: 820px) { .footer__top { grid-template-columns: 1fr 1fr; } }
+</style>

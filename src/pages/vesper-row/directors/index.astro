@@ -1,0 +1,56 @@
+---
+import Layout from "../../../layouts/Vesper.astro";
+import data from "../../../data/vesper.json";
+import { url, media } from "../../../lib.js";
+const count = (slug) => data.work.filter((w) => w.director === slug).length;
+---
+<Layout title="Directors" active="Directors" description="The Vesper Row roster: automotive, sport, fragrance and music video directors.">
+  <section class="stage">
+    <div class="stage__bg" aria-hidden="true">
+      {data.directors.map((d, i) => <video src={media(d.loop)} poster={media(d.cover)} muted loop playsinline preload={i === 0 ? "auto" : "metadata"} autoplay={i === 0} class:list={[{ on: i === 0 }]}></video>)}
+    </div>
+    <div class="stage__inner wrap">
+      <p class="mono" data-page-in>Directors · {data.directors.length}</p>
+      <ul class="names">
+        {data.directors.map((d, i) => (
+          <li data-i={i} class:list={[{ "is-on": i === 0 }]}>
+            <a href={url(`/vesper-row/directors/${d.slug}/`)} data-cursor="View">
+              <span class="names__n"><span class="names__in">{d.name}</span></span>
+              <span class="names__meta"><span class="mono">{d.focus}</span><span class="mono">{count(d.slug)} films</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import gsap from "gsap";
+  const bg = [...document.querySelectorAll<HTMLVideoElement>(".stage__bg video")];
+  const lis = [...document.querySelectorAll<HTMLElement>(".names li")];
+  const show = (i: number) => {
+    bg.forEach((v, k) => { v.classList.toggle("on", k === i); if (k === i) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
+    lis.forEach((x, k) => x.classList.toggle("is-on", k === i));
+  };
+  lis.forEach((li, i) => { li.addEventListener("pointerenter", () => show(i)); li.querySelector("a")?.addEventListener("focus", () => show(i)); });
+  gsap.from(".names__in", { yPercent: 110, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.2 });
+</script>
+
+<style>
+  .stage { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; }
+  .stage__bg { position: absolute; inset: 0; }
+  .stage__bg video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); filter: brightness(.5); transition: opacity 1s, transform 2.4s cubic-bezier(.2,.8,.2,1); }
+  .stage__bg video.on { opacity: 1; transform: scale(1); }
+  .stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.6), rgba(0,0,0,.15) 70%); pointer-events: none; }
+  .stage__inner { position: relative; z-index: 1; width: 100%; padding-top: 140px; padding-bottom: clamp(40px, 6vw, 80px); }
+  .names { list-style: none; margin: 24px 0 0; padding: 0; }
+  .names li { overflow: hidden; border-bottom: 1px solid rgba(237,233,227,.18); }
+  .names a { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; padding: 8px 0; }
+  .names__n { display: inline-block; font-size: clamp(48px, 10.5vw, 190px); font-weight: 500; letter-spacing: -0.06em; line-height: .92; color: rgba(237,233,227,.3); transition: color .5s, transform .8s cubic-bezier(.2,.8,.2,1); }
+  .names li.is-on .names__n { color: var(--fg); transform: translateX(18px); }
+  .names__in { display: inline-block; }
+  .names__meta { display: grid; justify-items: end; gap: 4px; }
+  .names__meta .mono { color: rgba(237,233,227,.75); }
+  @media (max-width: 820px) { .names__meta { justify-items: start; } }
+</style>

@@ -1,0 +1,40 @@
+---
+import "../kit/kit.css";
+import { url, media } from "../lib.js";
+const sites = [
+  { href: "/vesper-row/", name: "Vesper Row", kind: "Production company", loop: "hd/redcar.mp4" },
+  { href: "/mira-castellane/", name: "Mira Castellane", kind: "Commercial director", loop: "hd/m-silk.mp4" },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concept sites by Siva</title>
+    <meta name="description" content="Concept websites for a production company and a commercial director, built by Siva." />
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <main>
+      <p class="mono">Concept sites by Siva</p>
+      <ul>
+        {sites.map((s) => (
+          <li data-preview={media(s.loop)}><a href={url(s.href)}><span class="n">{s.name}</span><span class="mono">{s.kind}</span></a></li>
+        ))}
+      </ul>
+      <p class="mono note">Both studios are fictional, built to show design and motion. Footage: Pexels.</p>
+    </main>
+    <script>import { initMotion } from "../kit/motion.js"; initMotion();</script>
+  </body>
+</html>
+<style is:global>
+  body { margin: 0; min-height: 100svh; background: #0b0b0b; color: #ede9e3; font-family: "Inter Tight", sans-serif; display: grid; place-items: center; }
+  main { width: min(1100px, 100% - 32px); }
+  .mono { font: 500 11px/1.4 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: #8d8a84; }
+  ul { list-style: none; padding: 0; margin: 24px 0; border-top: 1px solid #262523; }
+  a { color: inherit; text-decoration: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; padding: 18px 0; border-bottom: 1px solid #262523; }
+  .n { font-size: clamp(40px, 8vw, 110px); letter-spacing: -0.05em; font-weight: 500; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  a:hover .n { transform: translateX(16px); }
+</style>

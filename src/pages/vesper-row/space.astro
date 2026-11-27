@@ -1,0 +1,38 @@
+---
+import Layout from "../../layouts/Vesper.astro";
+import data from "../../data/vesper.json";
+import { url, media } from "../../lib.js";
+---
+<Layout title="Space" active="Space" description="Two stages and a screening room in Toronto, available with or without our crews.">
+  <header class="page-head">
+    <h1 data-split>Space</h1>
+    <p data-page-in>Two stages and a screening room in Toronto. Book them with our crews or bring your own.</p>
+  </header>
+  {data.space.map((s, i) => (
+    <section class:list={["room wrap", { flip: i % 2 }]}>
+      {s.video
+        ? <div class="room__img room__screen" data-clip-reveal><video src={media(s.video)} autoplay muted loop playsinline></video></div>
+        : <div class="room__img" data-clip-reveal><img src={media(s.image)} alt={`${s.name}: ${s.spec}`} loading="lazy" data-parallax="0.1" /></div>}
+      <div class="room__text" data-reveal="stagger">
+        <span class="mono">{String(i + 1).padStart(2, "0")}</span>
+        <h2>{s.name}</h2>
+        <p>{s.spec}</p>
+      </div>
+    </section>
+  ))}
+  <div class="cta wrap"><a class="btn" href={url("/vesper-row/contact/")} data-magnetic>Check availability</a></div>
+</Layout>
+<style>
+  .room { display: grid; grid-template-columns: 1.6fr 1fr; gap: clamp(24px, 4vw, 60px); align-items: end; margin-bottom: clamp(80px, 10vw, 160px); }
+  .room.flip { grid-template-columns: 1fr 1.6fr; }
+  .room.flip .room__img { order: 2; }
+  .room__img { aspect-ratio: 16 / 10; overflow: hidden; }
+  .room__img img { width: 100%; height: 115%; object-fit: cover; }
+  .room__screen { background: #000; padding: 7% 9%; box-shadow: inset 0 0 120px rgba(201,180,138,.12); }
+  .room__screen video { width: 100%; height: 100%; object-fit: cover; box-shadow: 0 0 80px rgba(237,233,227,.18); }
+  .room h2 { font-size: clamp(40px, 6vw, 90px); margin: 14px 0; }
+  .room p { color: var(--dim); font-size: 18px; max-width: 32ch; margin: 0; }
+  .cta { text-align: center; }
+  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 22px 34px; border-radius: 99px; font-size: 18px; }
+  @media (max-width: 820px) { .room, .room.flip { grid-template-columns: 1fr; } .room.flip .room__img { order: 0; } }
+</style>

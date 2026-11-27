@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Mira.astro";
+---
+<Layout title="Contact" active="Contact" description="Send Mira Castellane a script or a brief.">
+  <section class="wrap c">
+    <h1 data-split>Send me a <em>script</em>.</h1>
+    <a class="mail" href="#" data-magnetic>mira@castellane.example</a>
+    <p class="mono">Toronto · Available from January 2027 · Treatments in 72 hours</p>
+  </section>
+</Layout>
+<style>
+  .c { padding-top: clamp(140px, 14vw, 200px); text-align: center; }
+  h1 { font-size: clamp(64px, 12vw, 200px); }
+  h1 em { color: var(--accent); }
+  .mail { display: inline-block; margin: 50px 0 20px; font-size: clamp(22px, 3vw, 40px); border-bottom: 1px solid currentColor; }
+</style>

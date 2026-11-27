@@ -1,0 +1,25 @@
+---
+import Layout from "../../../layouts/Mira.astro";
+import data from "../../../data/mira.json";
+import { url, formatDate } from "../../../lib.js";
+export function getStaticPaths() {
+  return data.notes.map((n) => ({ params: { slug: n.slug }, props: { n } }));
+}
+const { n } = Astro.props;
+---
+<Layout title={n.title} active="Notes" description={n.body[0]}>
+  <article class="wrap">
+    <a class="kit-back" href={url("/mira-castellane/notes/")}>← All notes</a>
+    <p class="mono" data-page-in>{formatDate(n.date)}</p>
+    <h1 data-split>{n.title}</h1>
+    <div class="body" data-reveal="stagger">{n.body.map((p) => <p>{p}</p>)}</div>
+    <a class="back mono" href={url("/mira-castellane/notes/")}>← All notes</a>
+  </article>
+</Layout>
+<style>
+  article { max-width: 900px; margin: 0 auto; padding-top: clamp(120px, 12vw, 170px); }
+  h1 { font-size: clamp(44px, 7vw, 100px); margin: 12px 0 50px; }
+  .body p { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.6; }
+  .body p:first-child::first-letter { font-family: "Instrument Serif", serif; font-size: 3.4em; float: left; line-height: .8; margin: .08em .1em 0 0; color: var(--accent); }
+  .back { display: inline-block; margin-top: 50px; color: var(--fg); }
+</style>

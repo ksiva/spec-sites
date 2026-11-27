@@ -1,0 +1,99 @@
+---
+import Layout from "../../layouts/Vesper.astro";
+import data from "../../data/vesper.json";
+import { url, media, formatDate } from "../../lib.js";
+const dir = Object.fromEntries(data.directors.map((d) => [d.slug, d]));
+const cats = ["All", ...new Set(data.work.map((w) => w.category))];
+---
+<Layout title="Work and News" active="Work/News" description="Commercials and branded films produced by Vesper Row, plus roster and studio news.">
+  <header class="page-head">
+    <h1 data-split>Work <span class="slash">/</span> <a href="#news" class="h-news">News</a></h1>
+    <nav class="jump mono" aria-label="On this page" data-page-in><a href="#work">{data.work.length} films</a><a href="#news">{data.news.length} news posts ↓</a></nav>
+    <div class="filters" role="tablist" data-page-in>
+      {cats.map((c, i) => <button class="chip mono" role="tab" aria-selected={i === 0 ? "true" : "false"} data-cat={c}>{c}</button>)}
+    </div>
+  </header>
+  <section class="grid wrap" id="work">
+    {data.work.map((w) => (
+      <article class="card" data-cat={w.category} data-hover-play data-cursor="Play" data-film-src={media(w.loop)} data-film-title={w.title} data-film-meta={`${w.client} · ${dir[w.director].name} · ${w.year}`} aria-label={`Play ${w.title}`}>
+        <div class="card__media" data-clip-reveal>
+          <img src={media(w.still)} alt={`Still from ${w.title} for ${w.client}`} loading="lazy" />
+          <video src={media(w.loop)} muted loop playsinline preload="none"></video>
+        </div>
+        <div class="card__meta">
+          <h2>{w.title}</h2>
+          <span>{w.client}</span>
+          <a class="mono" href={url(`/vesper-row/directors/${w.director}/`)}>{dir[w.director].name}</a>
+          <span class="mono">{w.year}</span>
+        </div>
+      </article>
+    ))}
+  </section>
+  <section class="news wrap" id="news">
+    <h2 class="news__h" data-split>News</h2>
+    <ul class="nlist" data-reveal="stagger">
+      {data.news.map((n) => (
+        <li data-preview={media(n.loop)}>
+          <a href={url(`/vesper-row/news/${n.slug}/`)}>
+            <span class="mono">{formatDate(n.date)}</span>
+            <span class="nlist__t">{n.title}</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  const chips = document.querySelectorAll<HTMLButtonElement>(".chip");
+  const cards = document.querySelectorAll<HTMLElement>(".card");
+  chips.forEach((chip) => chip.addEventListener("click", () => {
+    chips.forEach((c) => c.setAttribute("aria-selected", String(c === chip)));
+    const cat = chip.dataset.cat;
+    cards.forEach((card) => { card.hidden = !(cat === "All" || card.dataset.cat === cat); });
+    gsap.fromTo([...cards].filter((c) => !c.hidden), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7, stagger: .06, ease: "power3.out" });
+    ScrollTrigger.refresh();
+  }));
+</script>
+
+<style>
+  .slash { color: var(--dim); }
+  .h-news { color: var(--dim); transition: color .3s; }
+  .h-news:hover { color: var(--fg); }
+  .jump { display: flex; gap: 18px; margin-top: 22px; }
+  .jump a { color: var(--fg); border-bottom: 1px solid var(--dim); padding-bottom: 2px; }
+  #work { scroll-margin-top: 90px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+  .chip { background: none; color: var(--fg); border: 1px solid var(--line); padding: 10px 16px; border-radius: 99px; transition: background .3s, color .3s; }
+  .chip[aria-selected="true"], .chip:hover { background: var(--fg); color: var(--bg); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 5vw, 80px) 20px; }
+  .card:nth-child(3n+1) { grid-column: span 2; }
+  .card__media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #151515; }
+  .card:nth-child(3n+1) .card__media { aspect-ratio: 2.39 / 1; }
+  .card__media img, .card__media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card__media video { opacity: 0; transition: opacity .5s; }
+  .card:hover video { opacity: 1; }
+  .card__meta { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr auto; gap: 12px; align-items: baseline; padding-top: 14px; }
+  .card__meta h2 { font-size: clamp(22px, 2.4vw, 34px); }
+  .card__meta span:not(.mono) { color: var(--dim); }
+  .card__meta a:hover { color: var(--fg); }
+  @media (max-width: 820px) {
+    .grid { grid-template-columns: 1fr; }
+    .card:nth-child(3n+1) { grid-column: auto; }
+    .card__meta { grid-template-columns: 1fr auto; }
+    .card__meta span:not(.mono) { display: none; }
+  }
+  @media (hover: none) { .is-playing video { opacity: 1; } }
+  .news { margin-top: clamp(120px, 14vw, 220px); scroll-margin-top: 90px; }
+  .news__h { font-size: clamp(56px, 11vw, 180px); margin-bottom: 30px; }
+  .nlist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .nlist a { display: grid; grid-template-columns: 200px 1fr auto; gap: 20px; align-items: baseline; padding: 28px 0; border-bottom: 1px solid var(--line); }
+  .nlist__t { font-size: clamp(24px, 3.4vw, 52px); letter-spacing: -0.03em; line-height: 1.05; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .nlist a:hover .nlist__t { transform: translateX(14px); }
+  .arrow { font-size: 26px; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .nlist a:hover .arrow { transform: rotate(-45deg); }
+  @media (max-width: 820px) { .nlist a { grid-template-columns: 1fr auto; } .nlist .mono { grid-column: 1 / -1; } }
+</style>

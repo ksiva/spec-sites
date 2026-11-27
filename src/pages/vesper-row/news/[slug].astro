@@ -1,0 +1,32 @@
+---
+import Layout from "../../../layouts/Vesper.astro";
+import data from "../../../data/vesper.json";
+import { url, media, formatDate } from "../../../lib.js";
+export function getStaticPaths() {
+  return data.news.map((n) => ({ params: { slug: n.slug }, props: { post: n } }));
+}
+const { post } = Astro.props;
+const i = data.news.findIndex((n) => n.slug === post.slug);
+const next = data.news[(i + 1) % data.news.length];
+---
+<Layout title={post.title} active="Work/News" description={post.body[0]}>
+  <article>
+    <header class="page-head">
+      <a class="kit-back" href={url("/vesper-row/work/#news")}>← All news</a>
+      <span class="mono" data-page-in>{formatDate(post.date)}</span>
+      <h1 class="title" data-split>{post.title}</h1>
+    </header>
+    <div class="img wrap"><div data-clip-reveal><img src={media(post.image)} alt={post.title} /></div></div>
+    <div class="body wrap" data-reveal="stagger">{post.body.map((p) => <p>{p}</p>)}</div>
+  </article>
+  <a class="next wrap" href={url(`/vesper-row/news/${next.slug}/`)} data-cursor="Next">
+    <span class="mono">Next</span><span class="next__t">{next.title}</span>
+  </a>
+</Layout>
+<style>
+  .title { font-size: clamp(40px, 7vw, 110px); max-width: 16ch; margin-top: 20px; }
+  .img img { width: 100%; aspect-ratio: 2.39 / 1; object-fit: cover; }
+  .body { max-width: 760px; margin: 60px auto 0; font-size: clamp(18px, 1.6vw, 22px); line-height: 1.55; }
+  .next { display: block; margin-top: 140px; padding-top: 40px; border-top: 1px solid var(--line); }
+  .next__t { display: block; font-size: clamp(32px, 6vw, 96px); letter-spacing: -0.04em; margin-top: 12px; line-height: 1; }
+</style>

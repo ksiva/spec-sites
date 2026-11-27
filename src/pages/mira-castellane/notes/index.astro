@@ -1,0 +1,24 @@
+---
+import Layout from "../../../layouts/Mira.astro";
+import data from "../../../data/mira.json";
+import { url, formatDate } from "../../../lib.js";
+---
+<Layout title="Notes" active="Notes" description="Short notes on shooting commercials, by Mira Castellane.">
+  <section class="wrap top"><h1 data-split>Notes</h1></section>
+  <ul class="wrap list" data-reveal="stagger">
+    {data.notes.map((n) => (
+      <li><a href={url(`/mira-castellane/notes/${n.slug}/`)}><span class="mono">{formatDate(n.date)}</span><span class="t">{n.title}</span><span class="arrow">↗</span></a></li>
+    ))}
+  </ul>
+</Layout>
+<style>
+  .top { padding-top: clamp(120px, 12vw, 170px); }
+  .top h1 { font-size: clamp(80px, 14vw, 240px); }
+  .list { list-style: none; margin: 40px 0 0; }
+  .list a { display: grid; grid-template-columns: 200px 1fr auto; gap: 20px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--line); }
+  .t { font-family: "Instrument Serif", serif; font-size: clamp(28px, 3.6vw, 56px); line-height: 1.05; transition: color .3s; }
+  .list a:hover .t { color: var(--accent); font-style: italic; }
+  .arrow { font-size: 26px; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+  .list a:hover .arrow { transform: translate(4px, -4px); }
+  @media (max-width: 720px) { .list a { grid-template-columns: 1fr auto; } .list .mono { grid-column: 1 / -1; } }
+</style>
